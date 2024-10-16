@@ -4,15 +4,18 @@
       "Trim": {
         "Oids": [
           "OverheadBrightForOledStep",
-          "OverheadBrightForLedStep"
+          "OverheadBrightForLedStep",
+          "Takis"
         ],
-        "Port": "COM4"
+        "Port": "COM4",
+        "status": true
       },
       "Takis": {
         "Oids": [
           "oid1",
         ],
-        "Port": "COM5"
+        "Port": "COM5",
+        "status": false
       }
     },
     "Overhead": {
@@ -21,14 +24,16 @@
           "oidA1",
           "oidA2"
         ],
-        "Port": "COM6"
+        "Port": "COM6",
+        "status": true
       },
       "PanelB": {
         "Oids": [
           "oidB1",
           "oidB2"
         ],
-        "Port": "COM7"
+        "Port": "COM7",
+        "status": true
       }
     }
   }

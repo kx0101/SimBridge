@@ -110,6 +110,8 @@ namespace DynamicModuleSystem
             Console.WriteLine("Parsed: " + parsed);
             Console.WriteLine("oidTarget: " + oidTarget);
 
+            // build binary parser
+
             /* try */
             /* { */
             /*     switch (parsed.Type) */
@@ -193,12 +195,14 @@ namespace DynamicModuleSystem
         public List<string> OidsStrings { get; private set; }
         public List<Oid> Oids = new List<Oid>();
         public string Port { get; private set; }
+        public bool Status { get; private set; }
 
-        public Panel(string name, List<string> oids, string port)
+        public Panel(string name, List<string> oids, string port, bool status)
         {
             Name = name;
             OidsStrings = oids;
             Port = port;
+            Status = status;
 
             foreach (var oid in OidsStrings)
             {
@@ -239,8 +243,9 @@ namespace DynamicModuleSystem
                     var panelName = panelEntry.Key;
                     var oids = panelEntry.Value.Oids;
                     var port = panelEntry.Value.Port;
+                    var status = panelEntry.Value.Status;
 
-                    var panel = new Panel(module.Name + "." + panelName, oids, port);
+                    var panel = new Panel(module.Name + "." + panelName, oids, port, status);
                     module.AddPanel(panel);
                 }
 
@@ -249,9 +254,15 @@ namespace DynamicModuleSystem
 
                 foreach (var panel in module.Panels)
                 {
+                    if (!panel.Status)
+                    {
+                        Console.WriteLine($"{panel.Name} is not enabled");
+                        continue;
+                    }
+
                     if (panel.Name == "Pedestal.Trim")
                     {
-                        module.OnDataReceived(module.Name, panel.Name, "OverheadBrightForOledStep I 100 extra_info");
+                        module.OnDataReceived(module.Name, panel.Name, "Takis I 100 extra_info");
                     }
                     else if (panel.Name == "Pedestal.Takis")
                     {
@@ -273,6 +284,7 @@ namespace DynamicModuleSystem
     {
         public List<string> Oids { get; set; }
         public string Port { get; set; }
+        public bool Status { get; set; }
     }
 
     public class State
@@ -299,6 +311,7 @@ namespace DynamicModuleSystem
         oidA2,
         oidB1,
         oidB2,
+        Takis,
     }
 
     public class ParsedData
