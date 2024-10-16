@@ -6,11 +6,15 @@ namespace DynamicModuleSystem
     {
         public String Name { get; }
         public List<Oid> Oids { get; }
+        public String Port { get; }
+        public bool Status { get; }
 
-        public PanelInfo(String name, List<Oid> oids)
+        public PanelInfo(String name, List<Oid> oids, String port, bool status)
         {
             Name = name;
             Oids = oids;
+            Port = port;
+            Status = status;
         }
     }
 
@@ -45,7 +49,7 @@ namespace DynamicModuleSystem
         {
             if (!_panels.ContainsKey(panel.Name))
             {
-                var panelInfo = new PanelInfo(panel.Name, panel.Oids);
+                var panelInfo = new PanelInfo(panel.Name, panel.Oids, panel.Port, panel.Status);
                 _panels[panel.Name] = panelInfo;
             }
             else
