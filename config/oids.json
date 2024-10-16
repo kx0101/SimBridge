@@ -1,0 +1,35 @@
+{
+  "Modules": {
+    "Pedestal": {
+      "Trim": {
+        "Oids": [
+          "OverheadBrightForOledStep",
+          "OverheadBrightForLedStep"
+        ],
+        "Port": "COM4"
+      },
+      "Takis": {
+        "Oids": [
+          "oid1",
+        ],
+        "Port": "COM5"
+      }
+    },
+    "Overhead": {
+      "PanelA": {
+        "Oids": [
+          "oidA1",
+          "oidA2"
+        ],
+        "Port": "COM6"
+      },
+      "PanelB": {
+        "Oids": [
+          "oidB1",
+          "oidB2"
+        ],
+        "Port": "COM7"
+      }
+    }
+  }
+}
