@@ -10,7 +10,7 @@
         "Port": "COM4",
         "status": true
       },
-      "Takis": {
+      "SecondPanel": {
         "Oids": [
           "oid1",
         ],

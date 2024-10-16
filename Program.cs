@@ -54,9 +54,9 @@ namespace DynamicModuleSystem
             }
         }
 
-        public void OnDataReceived(String moduleName, String panelName, string data)
+        public void OnDataReceived(String panelName, string data)
         {
-            Log($"Module: {moduleName} and panel: {panelName} has received: {data}");
+            Log($"Module name: {panelName} has received: {data}");
 
             serialData = data;
             ProcessState();
@@ -262,11 +262,11 @@ namespace DynamicModuleSystem
 
                     if (panel.Name == "Pedestal.Trim")
                     {
-                        module.OnDataReceived(module.Name, panel.Name, "Takis I 100 extra_info");
+                        module.OnDataReceived(panel.Name, "Takis I 100 extra_info");
                     }
                     else if (panel.Name == "Pedestal.Takis")
                     {
-                        module.OnDataReceived(module.Name, panel.Name, "oid1 F 12.5 extra_info");
+                        module.OnDataReceived(panel.Name, "oid1 F 12.5 extra_info");
                     }
                 }
 
