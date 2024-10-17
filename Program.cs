@@ -78,13 +78,13 @@ namespace DynamicModuleSystem
             Log($"Received data: {serialData}");
             string[] parts = serialData.Split(' ');
 
-            if (parts.Length != 4)
+            if (parts.Length != 3)
             {
                 Log($"Received invalid data format: {serialData}");
                 return false;
             }
 
-            ParsedData parsed = new ParsedData(parts[0], parts[1], parts[2], parts[3]);
+            ParsedData parsed = new ParsedData(parts[0], parts[1], parts[2]);
             foreach (var panelEntry in _panels)
             {
                 var currOids = panelEntry.Value.Oids;
@@ -105,6 +105,11 @@ namespace DynamicModuleSystem
                 return false;
             }
 
+            if (state == null)
+            {
+                state = new State();
+            }
+
             return UpdateState(state, parsed);
         }
 
@@ -114,34 +119,37 @@ namespace DynamicModuleSystem
             Console.WriteLine("Parsed: " + parsed);
             Console.WriteLine("oidTarget: " + oidTarget);
 
-            // build binary parser
+            string jsonString = JsonConvert.SerializeObject(parsed);
 
-            /* try */
-            /* { */
-            /*     switch (parsed.Type) */
-            /*     { */
-            /*         case "I": */
-            /*             state.Set(oidTarget, int.Parse(parsed.Value)); */
-            /*             Log($"Set {oidTarget} to {state.GetInt(oidTarget)}"); */
-            /*             break; */
-            /*         case "F": */
-            /*             state.Set(oidTarget, float.Parse(parsed.Value)); */
-            /*             Log($"Set {oidTarget} to {state.GetFloat(oidTarget)}"); */
-            /*             break; */
-            /*         case "B": */
-            /*             state.Set(oidTarget, bool.Parse(parsed.Value)); */
-            /*             Log($"Set {oidTarget} to {state.GetBool(oidTarget)}"); */
-            /*             break; */
-            /*         default: */
-            /*             Log($"Unknown type {parsed.Type} for Oid {oidTarget}"); */
-            /*             return false; */
-            /*     } */
-            /* } */
-            /* catch (FormatException ex) */
-            /* { */
-            /*     Log($"Format error while parsing value: {parsed.Value} Exception: {ex.Message}"); */
-            /*     return false; */
-            /* } */
+            try
+            {
+                switch (parsed.Type)
+                {
+                    case "I":
+                        state.Set(oidTarget, int.Parse(parsed.Value));
+                        _communication.WriteToPort(jsonString);
+                        Log($"Set {oidTarget} to {state.GetInt(oidTarget)}");
+                        break;
+                    case "F":
+                        state.Set(oidTarget, float.Parse(parsed.Value));
+                        _communication.WriteToPort(jsonString);
+                        Log($"Set {oidTarget} to {state.GetFloat(oidTarget)}");
+                        break;
+                    case "B":
+                        state.Set(oidTarget, bool.Parse(parsed.Value));
+                        _communication.WriteToPort(jsonString);
+                        Log($"Set {oidTarget} to {state.GetBool(oidTarget)}");
+                        break;
+                    default:
+                        Log($"Unknown type {parsed.Type} for Oid {oidTarget}");
+                        return false;
+                }
+            }
+            catch (FormatException ex)
+            {
+                Log($"Format error while parsing value: {parsed.Value} Exception: {ex.Message}");
+                return false;
+            }
 
             previousData = serialData;
             return true;
@@ -266,11 +274,11 @@ namespace DynamicModuleSystem
 
                     if (panel.Name == "Pedestal.Trim")
                     {
-                        module.OnDataReceived(panel.Name, "Takis I 100 extra_info");
+                        module.OnDataReceived(panel.Name, "OverheadBrightForOledStep I 100");
                     }
                     else if (panel.Name == "Pedestal.Takis")
                     {
-                        module.OnDataReceived(panel.Name, "oid1 F 12.5 extra_info");
+                        module.OnDataReceived(panel.Name, "oid1 F 12.5");
                     }
                 }
 
@@ -323,24 +331,26 @@ namespace DynamicModuleSystem
         public string Link { get; }
         public string Type { get; }
         public string Value { get; }
-        public string Extra { get; }
 
-        public ParsedData(string link, string type, string value, string extra)
+        public ParsedData(string link, string type, string value)
         {
             Link = link;
             Type = type;
             Value = value;
-            Extra = extra;
         }
 
         public override String ToString()
         {
-            return "Link: " + Link + " Type: " + Type + " Value: " + Value + " Extra: " + Extra;
+            return Link + " " + Type + " " + Value;
         }
     }
 
     public class SerialPortManager
     {
+        public void WriteToPort(string text)
+        {
+            Console.WriteLine("Writing to port...: " + text);
+        }
     }
 
     public interface IHardwareModule

@@ -4,8 +4,7 @@
       "Trim": {
         "Oids": [
           "OverheadBrightForOledStep",
-          "OverheadBrightForLedStep",
-          "Takis"
+          "OverheadBrightForLedStep"
         ],
         "Port": "COM4",
         "status": true
